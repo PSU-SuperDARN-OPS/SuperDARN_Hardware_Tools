@@ -3,7 +3,7 @@
 # jtklein@alaska.edu, jon klein, 10/2013
 
 from vna_control import *
-import argparse, logging 
+import argparse, logging, os, sys 
 
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         sys.exit("error: average count is less than 1")
 
     if not os.path.exists(args.ddir):
-        sys.exit("error: data directory does not exist: %s" % (directory))
+        sys.exit("error: data directory does not exist: %s" % (args.ddir))
 
     if args.cables < 1:
         sys.exit("error: cable count is less than 1")
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         p = int(raw_input('connect and enter a cable number and then press enter to continue... '))
 
         clen = cable_length(vna)
-        logging.info('initial cable %d length is %.2f of %.2f meters' % (p clen, tlen))
+        logging.info('initial cable %d length is %.2f of %.2f meters' % (p, clen, tlen))
 
         while abs(clen - ars.tlen) > args.tol:
             clen = cable_length(vna)
