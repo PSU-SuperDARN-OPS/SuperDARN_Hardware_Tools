@@ -96,7 +96,7 @@ if __name__ == '__main__':
     # setup logging and csv file writing
     logging.basicConfig(format='%(asctime)s %(message)s', filename= args.ddir + '/cable_len' + str(datetime.date.today()) + '.log', filemode='a')
 
-    csvfile = open('cable_lens' + str(datetime.date.today()) + '.csv', 'a')
+    csvfile = open(args.dir + '/cable_lens' + str(datetime.date.today()) + '.csv', 'a')
     csvwriter = csv.writer(csvfile, delimiter = ',')
     
     csvwriter.writerow(["cable length log", str(datetime.date.today())])
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     # calibrate VNA if run with --cal
     if args.cal:
         printlog('calibrating VNA')
-        vna_through_cal(vna)
+        vna_slot1_cal(vna, 2)
         vna_trigger(vna, TIMEOUT, args.avg)
     
     cable_lens = {}
