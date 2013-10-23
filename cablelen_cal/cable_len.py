@@ -3,11 +3,11 @@
 
 from __future__ import division
 from vna_control import *
-from numpy import mean, deg2rad, pi
+from numpy import mean, deg2rad, pi, floor
 import argparse, logging, os, sys, csv, datetime, pdb
 
-FSTART = 8e6 
-FSTOP = 18e6
+FSTART = 5e6 
+FSTOP = 25e6
 
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
@@ -151,7 +151,10 @@ if __name__ == '__main__':
             clen = get_cablelen(vna, args.vel, freqs)
             error = clen - args.tlen
             printlog('cable %d is %.4f of %.4f meters' % (p, clen, args.tlen))
-            printlog('cable %d error is %.4f, cut %.4f meters' % (p, error, error / 2.0))
+            feeterror = FEET_PER_METER * (error / 2.0)
+            incherror = (feeterror - int(feeterror)) * 12
+
+            printlog('cable %d error is %.4f, cut %.4f meters (%.4f feet and %.4f inches)' % (p, error, error / 2.0, floor(feeterror), incherror))
             raw_input('press enter to continue\n')
 
 
