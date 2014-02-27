@@ -149,14 +149,11 @@ int main(int argc, char **argv)
     for(i = 0; i < PORTS; i++) {
         out8(IOBASE + CTRL_GRP + GRP_MLT * i, OUTPUT_DISABLE  + PORTA + PORTB + PORTC_LO + PORTC_HI);
     }
-   
-    // check output high
-    rvals += dio_porttest(IOBASE, port1, port2, 0xFF);
-    rvals += dio_porttest(IOBASE, port2, port1, 0xFF);
 
-    // check output low
-    rvals += dio_porttest(IOBASE, port2, port1, 0x00);
-    rvals += dio_porttest(IOBASE, port2, port1, 0x00);
+    for(i = 0; i < 256; i++) {
+     	rvals += dio_porttest(IOBASE, port1, port2, i);
+    	rvals += dio_porttest(IOBASE, port2, port1, i);
+    } 
 
     if(rvals) {
 	printf("errors found with dio card\n");
