@@ -2,7 +2,7 @@ from lan_control import *
 from pylab import *
 import time, pdb
 
-VNAHOST = '192.168.0.145'
+VNAHOST = '137.229.27.122'
 
 UNWRAPPED_PHASE = 'UPH'
 PHASE = 'PHAS'
@@ -11,20 +11,20 @@ GROUP_DELAY = 'GDEL'
 REAL = 'REAL'
 IMAG = 'IMAG'
 
-def vna_init(vna):
+def vna_init(vna, param='S21'):
     lan_send(vna, ":INITiate:CONTinuous OFF")
     lan_send(vna, ":CALC1:PAR:COUN 4")
     lan_send(vna, ":CALC1:PAR1:SEL")
-    lan_send(vna, ":CALC1:PAR1:DEFine S21")
+    lan_send(vna, ":CALC1:PAR1:DEFine " + param)
     lan_send(vna, ":CALC1:FORM UPH")
     lan_send(vna, ":CALC1:PAR2:SEL")
-    lan_send(vna, ":CALC1:PAR2:DEFine S21")
+    lan_send(vna, ":CALC1:PAR2:DEFine " + param)
     lan_send(vna, ":CALC1:FORM GDEL")
     lan_send(vna, ":CALC1:PAR3:SEL")
-    lan_send(vna, ":CALC1:PAR3:DEFine S21")
+    lan_send(vna, ":CALC1:PAR3:DEFine " + param)
     lan_send(vna, ":CALC1:FORM MLOG")
     lan_send(vna, ":CALC1:PAR4:SEL")
-    lan_send(vna, ":CALC1:PAR4:DEFine S21")
+    lan_send(vna, ":CALC1:PAR4:DEFine " + param)
     lan_send(vna, ":CALC1:FORM PHAS")
     lan_send(vna, ":SENS1:AVER OFF");
 
@@ -112,6 +112,21 @@ def vna_through_cal(vna):
     time.sleep(4)
     lan_send(vna, ":SENS1:CORR:COLL:SAVE")
     time.sleep(1)
+    raw_input('calibration complete, connect DUT and press enter to continue')
+
+def vna_slot1_cal(vna, port):
+    lan_send(vna, ":SENS1:CORR:COLL:METH:SLOT1 " + str(port))
+    time.sleep(1)
+    raw_input('connect OPEN to port ' + str(port) + ' then press enter to continue')
+    lan_send(vna, ":SENS1:CORR:COLL:OPEN " + str(port))
+    time.sleep(1)
+    raw_input('connect SHORT to port ' + str(port) + ' then press enter to continue')
+    lan_send(vna, ":SENS1:CORR:COLL:SHOR" + str(port))
+    time.sleep(1)
+    raw_input('connect LOAD to port ' + str(port) + ' then press enter to continue')
+    lan_send(vna, ":SENS1:CORR:COLL:LOAD " + str(port))
+    time.sleep(1)
+    lan_send(vna, ":SENS1:CORR:COLL:SAVE")
     raw_input('calibration complete, connect DUT and press enter to continue')
 
 def vna_readspan(vna):
