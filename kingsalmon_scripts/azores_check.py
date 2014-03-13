@@ -17,10 +17,18 @@ SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
 TX_STARTUP_DELAY = 20
 TIMEOUT = max(0.1,0.04/201.0 * SWEEP_POINTS)
-BEAMS = 16
+BEAMS = 24 
 
-OPT10MHZOFFSET = 320
-OPT12MHZOFFSET = 576
+
+WINDOWCAL_MEMBASE = 64
+WINDOWCAL_MEMSTEP = 32
+WINDOWCAL_FREQSTEP= .25e6 # hz
+WINDOWCAL_FREQBASE = 8.0e6 # hz
+WINDOWCAL_FREQMAX = 20e6 # hz
+CAL_FREQS = range(int(8e6), int(20e6), int(.25e6))
+
+def get_memaddr(freq, beam):
+        return int((freq - WINDOWCAL_FREQBASE) / (WINDOWCAL_FREQSTEP)) * WINDOWCAL_MEMSTEP + WINDOWCAL_MEMBASE + beam
 
 if __name__ == '__main__':
     # setup arguement parser and parse arguements
@@ -33,10 +41,12 @@ if __name__ == '__main__':
     parser.add_argument("--beams", type=int, help="specify number of beams", default=BEAMS)
     parser.add_argument("--avg", type=int, help="specify count to average", default=1)
     parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=1)
-    parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=OPT10MHZOFFSET)
+    parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=0)
+    parser.add_argument("--card", type=int, help="enter the card number", default=0)
+    parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=1)
     
     args = parser.parse_args()
-
+    args.cal = 0
     # sanity check arguements 
     if args.avg < 1:
         sys.exit("error: average count is less than 1")
@@ -93,7 +103,7 @@ if __name__ == '__main__':
 
         for b in range(args.beams):
             csvdat.beam = b
-            qnx_setmemloc(args.qnxip, b + args.memoffset)
+            qnx_setmemloc(args.qnxip, b)
             vna_clearave(vna)
             vna_trigger(vna, TIMEOUT, args.avg)
 
@@ -102,6 +112,25 @@ if __name__ == '__main__':
             csvdat.phase = vna_readphase(vna)
             csvdat.mlog = vna_readmlog(vna)
             
+            # overwrite generic calibration with frequency window calibrations where available
+            if args.freqcal:
+                for fc in CAL_FREQS:
+                    # find frequency range of calibration
+                    minidx = argmin(abs(csvdat.freqs - fc))
+                    maxidx = argmax(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
+                    
+                    # remeasure card
+                    qnx_setmemloc(args.qnxip, get_memaddr(fc, b))
+                    vna_clearave(vna)
+                    vna_trigger(vna, TIMEOUT, args.avg)
+                    
+                    # store data over calibrated range
+                    csvdat.tdelay[minidx:maxidx] = vna_readtimedelay(vna)[minidix:maxidx]
+                    csvdat.ephase[minidx:maxidx] = vna_readextendedphase(vna)[minidx:maxidx]
+                    csvdat.phase[minidx:maxidx] = vna_readphase(vna)[minidx:maxidx]
+                    csvdat.mlog[minidx:maxidx] = vna_readmlog(vna)[minidx:maxidx]
+                   
+                   
             write_csv(args.ddir, csvdat)
 
     lan_close(vna)

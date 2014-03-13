@@ -11,7 +11,7 @@ GROUP_DELAY = 'GDEL'
 REAL = 'REAL'
 IMAG = 'IMAG'
 
-def vna_init(vna, param='S21'):
+def vna_init(vna, param='S12'):
     lan_send(vna, ":INITiate:CONTinuous OFF")
     lan_send(vna, ":CALC1:PAR:COUN 4")
     lan_send(vna, ":CALC1:PAR1:SEL")
@@ -101,7 +101,7 @@ def vna_readtimedelay(vna):
     return delay[0::2]
 
 def vna_through_cal(vna):
-    raw_input('connect S21 through and press enter to continue')
+    raw_input('connect S12 through and press enter to continue')
     lan_send(vna, ":SENS1:CORR:COLL:METH:THRU 1,2")
     time.sleep(1) 
     lan_send(vna, "SENS1:CORR:COLL:THRU 1,2")
