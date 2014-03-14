@@ -12,7 +12,8 @@ REAL = 'REAL'
 IMAG = 'IMAG'
 
 def vna_init(vna, param='S12'):
-    lan_send(vna, ":INITiate:CONTinuous OFF")
+    lan_send(vna, ":INITiate:CONTinuous ON")
+    lan_send(vna, ":TRIG:SOUR BUS")
     lan_send(vna, ":CALC1:PAR:COUN 4")
     lan_send(vna, ":CALC1:PAR1:SEL")
     lan_send(vna, ":CALC1:PAR1:DEFine " + param)
@@ -64,11 +65,11 @@ def vna_enablesmoothing(vna, param,enable):
 def vna_preset(vna):
     return lan_send(vna, ":SYSTem:PRESet")
     
-def vna_trigger(vna,timeout=0.1, triggers=1):
+def vna_trigger(vna, triggers=1):
     for i in xrange(triggers):
-        lan_send(vna, ":INIT1:IMM")
-        time.sleep(timeout)
-     
+        lan_send(vna, ":TRIG:SING")
+        lan_send(vna, "*OPC?", wait=False)
+    
 
 def vna_readdat(vna,param,form):
     time.sleep(.2)

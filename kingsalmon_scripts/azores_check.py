@@ -15,8 +15,7 @@ import argparse, os, time, sys
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
-TX_STARTUP_DELAY = 20
-TIMEOUT = max(0.1,0.04/201.0 * SWEEP_POINTS)
+TX_STARTUP_DELAY = 2 # 20
 BEAMS = 24 
 
 
@@ -46,7 +45,6 @@ if __name__ == '__main__':
     parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=1)
     
     args = parser.parse_args()
-    args.cal = 0
     # sanity check arguements 
     if args.avg < 1:
         sys.exit("error: average count is less than 1")
@@ -81,7 +79,7 @@ if __name__ == '__main__':
     if args.cal:
         print 'calibrating VNA'
         vna_through_cal(vna)
-        vna_trigger(vna, TIMEOUT, args.avg)
+        vna_trigger(vna, args.avg)
 
     # setup csv data structure
     csvdat = csv_data()
@@ -105,7 +103,7 @@ if __name__ == '__main__':
             csvdat.beam = b
             qnx_setmemloc(args.qnxip, b)
             vna_clearave(vna)
-            vna_trigger(vna, TIMEOUT, args.avg)
+            vna_trigger(vna, args.avg)
 
             csvdat.tdelay = vna_readtimedelay(vna)
             csvdat.ephase = vna_readextendedphase(vna)
@@ -122,10 +120,10 @@ if __name__ == '__main__':
                     # remeasure card
                     qnx_setmemloc(args.qnxip, get_memaddr(fc, b))
                     vna_clearave(vna)
-                    vna_trigger(vna, TIMEOUT, args.avg)
+                    vna_trigger(vna, args.avg)
                     
                     # store data over calibrated range
-                    csvdat.tdelay[minidx:maxidx] = vna_readtimedelay(vna)[minidix:maxidx]
+                    csvdat.tdelay[minidx:maxidx] = vna_readtimedelay(vna)[minidx:maxidx]
                     csvdat.ephase[minidx:maxidx] = vna_readextendedphase(vna)[minidx:maxidx]
                     csvdat.phase[minidx:maxidx] = vna_readphase(vna)[minidx:maxidx]
                     csvdat.mlog[minidx:maxidx] = vna_readmlog(vna)[minidx:maxidx]

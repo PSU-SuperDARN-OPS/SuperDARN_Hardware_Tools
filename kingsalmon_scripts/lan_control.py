@@ -8,8 +8,12 @@ def lan_init(host):
     print "initial response from VNA: " + tn.read_until("MAGIC", timeout=5)
     return tn 
 
-def lan_send(tn, command, verbose=True):
-    tn.write(command + ';*WAI\r\n')
+def lan_send(tn, command, verbose=True, wait=True):
+    if wait:
+        tn.write(command + ';*WAI\r\n')
+    else:   
+        tn.write(command + '\r\n')
+
     time.sleep(.05)
     response = tn.read_until('>', VNATIMEOUT)
     response = response[:-7] # strip trailing SCPI>\r\n
