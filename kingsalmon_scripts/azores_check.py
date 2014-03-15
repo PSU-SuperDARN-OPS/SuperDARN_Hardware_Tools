@@ -15,8 +15,8 @@ import argparse, os, time, sys
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
-TX_STARTUP_DELAY = 2 # 20
-BEAMS = 24 
+TX_STARTUP_DELAY = 5 # 20
+BEAMS = 1 
 
 
 WINDOWCAL_MEMBASE = 64
@@ -98,8 +98,9 @@ if __name__ == '__main__':
         p = int(raw_input('connect and enter a path number and then press enter to continue... '))
         time.sleep(TX_STARTUP_DELAY) # wait for transmitter to warm up
         csvdat.card = p
-
+        print 'measuring card ' + str(p)
         for b in range(args.beams):
+            print '\tmeasuring beam ' + str(b)
             csvdat.beam = b
             qnx_setmemloc(args.qnxip, b)
             vna_clearave(vna)
@@ -113,6 +114,8 @@ if __name__ == '__main__':
             # overwrite generic calibration with frequency window calibrations where available
             if args.freqcal:
                 for fc in CAL_FREQS:
+                    print '\t\tmeasuring frequency ' + str(fc) + ' hz'
+
                     # find frequency range of calibration
                     minidx = argmin(abs(csvdat.freqs - fc))
                     maxidx = argmax(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))

@@ -6,7 +6,8 @@ directory="./freqcal"
 plotdir="freqcal"
 radar="AZE"
 maxbeams = 24
-cards = [6]
+cards = [6] # range(16)
+middlecards = [6,7,8,9]
 plot_directory=os.path.join(directory,plotdir)
 if not os.path.exists(plot_directory): os.mkdir(plot_directory)
 colors={0:"red",1:"blue",2:"black",3:"green",4:"cyan",5:"yellow"}
@@ -26,7 +27,7 @@ for bmnum in range(maxbeams):
   last_interf=None
   p.figure(104)
   p.clf()
-  for card in [6]:
+  for card in cards:
     data_interf=None
     data_main=None
     if card in cards:
@@ -59,7 +60,7 @@ for bmnum in range(maxbeams):
     if last_main is not None:
       main_nearest_pair_phase_diff=p.array(data_main.ephase)-p.array(last_main.ephase)
 
-    if card in [6,7,8,9]:
+    if card in middlecards: 
       interf_tdelay=p.array(data_interf.tdelay)
       diff_tdelay=interf_tdelay-main_tdelay
       phase_diff=p.array(data_interf.ephase)-p.array(data_main.ephase)
@@ -87,7 +88,7 @@ for bmnum in range(maxbeams):
 
     p.figure(200+bmnum)
     p.plot(freqs*1E-6,main_tdelay*1E9,color=colors[ card % 6 ],label="Card %02d" % (card) )
-    if card in [7,8,9,10]:
+    if card in middlecards: 
       p.figure(300+bmnum)
       p.plot(freqs*1E-6,interf_tdelay*1E9,color=colors[card % 6 ],label="Card %02d" % (card+10) )
 
@@ -95,10 +96,9 @@ for bmnum in range(maxbeams):
       p.figure(400+bmnum)
       p.plot(freqs*1E-6,main_nearest_pair_phase_diff,color=colors[ card % 6 ],label="Card %02d-%02d" % (card,card-1) )
     if last_interf is not None:
-      if card in [7,8,9,10]:
         p.figure(500+bmnum)
         p.plot(freqs*1E-6,interf_nearest_pair_phase_diff,color=colors[ card % 6 ],label="Card %02d-%02d" % (card+10,card-1+10) )
-    if card in [6,7,8,9]:
+    if card in middlecards: 
       p.figure(100)
       p.clf()
       p.grid(True)
