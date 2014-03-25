@@ -12,6 +12,6 @@ def qnx_setbeam(ip, beam):
     time.sleep(BEAM_SETTLE)
 
 
-def qnx_setmemloc(ip, loc):
-    os.system('ssh radar@' + ip + ' "/home/radar/bin/dio_beam_direction -b ' + str(int(loc)) + ' MemLoc -r 1 >/dev/null 2>/dev/null"')
+def qnx_setmemloc(ip, loc, rack=1):
+    os.system('ssh radar@' + ip + ' "/home/radar/bin/dio_beam_direction -b ' + str(int(loc)) + ' -r ' + str(rack) + ' >/dev/null 2>/dev/null"')
     time.sleep(BEAM_SETTLE)

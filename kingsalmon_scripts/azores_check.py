@@ -16,7 +16,7 @@ SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
 TX_STARTUP_DELAY = 5 # 20
-BEAMS = 1 
+BEAMS = 24 
 
 
 WINDOWCAL_MEMBASE = 64
@@ -36,9 +36,9 @@ if __name__ == '__main__':
     parser.add_argument("--cal", action="count", help="run through calibration on VNA before taking measurements", default=0)
     parser.add_argument("--vnaip", help="specify VNA ip address", default=VNAHOST)
     parser.add_argument("--qnxip", help="specify QNX ip address", default=QNX_IP)
-    parser.add_argument("--ddir", help="specify a directory to save the data in", default='sandbox')
+    parser.add_argument("--ddir", help="specify a directory to save the data in", default='freqcal')
     parser.add_argument("--beams", type=int, help="specify number of beams", default=BEAMS)
-    parser.add_argument("--avg", type=int, help="specify count to average", default=1)
+    parser.add_argument("--avg", type=int, help="specify count to average", default=4)
     parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=1)
     parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=0)
     parser.add_argument("--card", type=int, help="enter the card number", default=0)
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 
                     # find frequency range of calibration
                     minidx = argmin(abs(csvdat.freqs - fc))
-                    maxidx = argmax(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
+                    maxidx = argmin(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
                     
                     # remeasure card
                     qnx_setmemloc(args.qnxip, get_memaddr(fc, b))
