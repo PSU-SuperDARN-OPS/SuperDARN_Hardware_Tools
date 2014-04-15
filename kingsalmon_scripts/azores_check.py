@@ -43,7 +43,8 @@ if __name__ == '__main__':
     parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=0)
     parser.add_argument("--card", type=int, help="enter the card number", default=0)
     parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=1)
-    
+    parser.add_argument("--rack", type=int, help="rack number with card under test", default=0)
+
     args = parser.parse_args()
     # sanity check arguements 
     if args.avg < 1:
@@ -102,7 +103,7 @@ if __name__ == '__main__':
         for b in range(args.beams):
             print '\tmeasuring beam ' + str(b)
             csvdat.beam = b
-            qnx_setmemloc(args.qnxip, b)
+            qnx_setmemloc(args.qnxip, b, args.rack)
             vna_clearave(vna)
             vna_trigger(vna, args.avg)
 
@@ -121,7 +122,7 @@ if __name__ == '__main__':
                     maxidx = argmin(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
                     
                     # remeasure card
-                    qnx_setmemloc(args.qnxip, get_memaddr(fc, b))
+                    qnx_setmemloc(args.qnxip, get_memaddr(fc, b), args.rack)
                     vna_clearave(vna)
                     vna_trigger(vna, args.avg)
                     
