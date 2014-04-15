@@ -4,7 +4,7 @@
 import os
 import time
 
-QNX_IP = 'azores-qnx'
+QNX_IP = 'delta.gi.alaska.edu'
 BEAM_SETTLE = .5
 
 def qnx_setbeam(ip, beam):

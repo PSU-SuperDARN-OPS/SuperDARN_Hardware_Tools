@@ -6,7 +6,7 @@ directory="./freqcal"
 plotdir="freqcal"
 radar="AZE"
 maxbeams = 24
-cards = [6] # range(16)
+cards =  range(20)
 middlecards = [6,7,8,9]
 plot_directory=os.path.join(directory,plotdir)
 if not os.path.exists(plot_directory): os.mkdir(plot_directory)
@@ -30,7 +30,7 @@ for bmnum in range(maxbeams):
   for card in cards:
     data_interf=None
     data_main=None
-    if card in cards:
+    if card in middlecards:
       data_interf=csv_data()
       data_interf.card=card+10
       data_interf.beam=bmnum
