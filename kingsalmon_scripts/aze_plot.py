@@ -6,8 +6,8 @@ directory="./ade_rx"
 plotdir="adakplots"
 radar="AZW"
 maxbeams = 24
-cards = range(16)#[6]
-center = [6,7,8,9]
+cards =  range(20)
+middlecards = [6,7,8,9]
 plot_directory=os.path.join(directory,plotdir)
 if not os.path.exists(plot_directory): os.mkdir(plot_directory)
 colors={0:"red",1:"blue",2:"black",3:"green",4:"cyan",5:"yellow"}
@@ -27,10 +27,10 @@ for bmnum in range(maxbeams):
   last_interf=None
   p.figure(104)
   p.clf()
-  for card in cards: 
+  for card in cards:
     data_interf=None
     data_main=None
-    if card in center:
+    if card in middlecards:
       data_interf=csv_data()
       data_interf.card=card+10
       data_interf.beam=bmnum
@@ -60,8 +60,7 @@ for bmnum in range(maxbeams):
     main_ephase_tdelay=-main_ephase_diff/360.0/freq_diff
     if last_main is not None:
       main_nearest_pair_phase_diff=p.array(data_main.ephase)-p.array(last_main.ephase)
-
-    if card in center: 
+    if card in middlecards: 
       interf_tdelay=p.array(data_interf.tdelay)
       diff_tdelay=interf_tdelay-main_tdelay
       phase_diff=p.array(data_interf.ephase)-p.array(data_main.ephase)
@@ -89,11 +88,7 @@ for bmnum in range(maxbeams):
 
     p.figure(200+bmnum)
     p.plot(freqs*1E-6,main_tdelay*1E9,color=colors[ card % 6 ],label="Card %02d" % (card) )
-
-    p.figure(600+bmnum)
-    p.plot(freqs*1E-6,main_log,color=colors[ card % 6 ],label="Card %02d" % (card) )
-
-    if card in [7,8,9,10]:
+    if card in middlecards: 
       p.figure(300+bmnum)
       p.plot(freqs*1E-6,interf_tdelay*1E9,color=colors[card % 6 ],label="Card %02d" % (card+10) )
 
@@ -105,7 +100,7 @@ for bmnum in range(maxbeams):
         p.figure(500+bmnum)
         p.plot(freqs*1E-6,interf_nearest_pair_phase_diff,color=colors[ card % 6 ],label="Card %02d-%02d" % (card+10,card-1+10) )
     if card in center: 
-      p.figure(100)
+        .figure(100)
       p.clf()
       p.grid(True)
 #    p.plot(freqs[0:-1]*1E-6,diff_ephase_tdelay*1E9,color="black")

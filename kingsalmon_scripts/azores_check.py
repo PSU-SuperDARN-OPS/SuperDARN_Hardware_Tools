@@ -15,7 +15,7 @@ import argparse, os, time, sys
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
-TX_STARTUP_DELAY = 2 # 20
+TX_STARTUP_DELAY = 5 # 20
 BEAMS = 24 
 
 
@@ -36,14 +36,15 @@ if __name__ == '__main__':
     parser.add_argument("--cal", action="count", help="run through calibration on VNA before taking measurements", default=0)
     parser.add_argument("--vnaip", help="specify VNA ip address", default=VNAHOST)
     parser.add_argument("--qnxip", help="specify QNX ip address", default=QNX_IP)
-    parser.add_argument("--ddir", help="specify a directory to save the data in", default='sandbox')
+    parser.add_argument("--ddir", help="specify a directory to save the data in", default='freqcal')
     parser.add_argument("--beams", type=int, help="specify number of beams", default=BEAMS)
-    parser.add_argument("--avg", type=int, help="specify count to average", default=1)
+    parser.add_argument("--avg", type=int, help="specify count to average", default=4)
     parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=1)
     parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=0)
     parser.add_argument("--card", type=int, help="enter the card number", default=0)
-    parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=0)
-    
+    parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=1)
+    parser.add_argument("--rack", type=int, help="rack number with card under test", default=0)
+
     args = parser.parse_args()
     # sanity check arguements 
     if args.avg < 1:
@@ -98,10 +99,11 @@ if __name__ == '__main__':
         p = int(raw_input('connect and enter a path number and then press enter to continue... '))
         time.sleep(TX_STARTUP_DELAY) # wait for transmitter to warm up
         csvdat.card = p
-
+        print 'measuring card ' + str(p)
         for b in range(args.beams):
+            print '\tmeasuring beam ' + str(b)
             csvdat.beam = b
-            qnx_setbeam(args.qnxip, b)
+            qnx_setmemloc(args.qnxip, b, args.rack)
             vna_clearave(vna)
             vna_trigger(vna, args.avg)
 
@@ -113,12 +115,14 @@ if __name__ == '__main__':
             # overwrite generic calibration with frequency window calibrations where available
             if args.freqcal:
                 for fc in CAL_FREQS:
+                    print '\t\tmeasuring frequency ' + str(fc) + ' hz'
+
                     # find frequency range of calibration
                     minidx = argmin(abs(csvdat.freqs - fc))
-                    maxidx = argmax(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
+                    maxidx = argmin(abs(csvdat.freqs - (fc + WINDOWCAL_FREQSTEP)))
                     
                     # remeasure card
-                    qnx_setmemloc(args.qnxip, get_memaddr(fc, b))
+                    qnx_setmemloc(args.qnxip, get_memaddr(fc, b), args.rack)
                     vna_clearave(vna)
                     vna_trigger(vna, args.avg)
                     
