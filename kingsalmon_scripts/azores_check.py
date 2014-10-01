@@ -42,7 +42,7 @@ if __name__ == '__main__':
     parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=1)
     parser.add_argument("--memoffset", type=int, help="memory address offset for measurements", default=0)
     parser.add_argument("--card", type=int, help="enter the card number", default=0)
-    parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=1)
+    parser.add_argument("--freqcal", type=int, help="measure card calibrated with frequency windows", default=0)
     
     args = parser.parse_args()
     # sanity check arguements 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
         for b in range(args.beams):
             csvdat.beam = b
-            qnx_setmemloc(args.qnxip, b)
+            qnx_setbeam(args.qnxip, b)
             vna_clearave(vna)
             vna_trigger(vna, args.avg)
 

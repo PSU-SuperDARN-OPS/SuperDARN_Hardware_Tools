@@ -7,7 +7,6 @@
 
 from pylab import *
 from vna_control import *
-from qnx_beamcontrol import *
 from csv_utils import *
 
 import argparse, os, time, sys
@@ -15,9 +14,8 @@ import argparse, os, time, sys
 SWEEP_CENTER = 15e6
 SWEEP_SPAN = 20e6
 SWEEP_POINTS = 1201 
-TX_STARTUP_DELAY = 20
-TIMEOUT = max(0.1,0.04/201.0 * SWEEP_POINTS)
-BEAMS = 16
+TX_STARTUP_DELAY = 2 # 20
+BEAMS = 24 
 
 if __name__ == '__main__':
     # setup arguement parser and parse arguements
@@ -25,14 +23,11 @@ if __name__ == '__main__':
 
     parser.add_argument("--cal", action="count", help="run through calibration on VNA before taking measurements", default=0)
     parser.add_argument("--vnaip", help="specify VNA ip address", default=VNAHOST)
-    parser.add_argument("--vnaport", type=int, help="telnet port on VNA", default=5024)
-    parser.add_argument("--qnxip", help="specify QNX ip address", default=QNX_IP)
-    parser.add_argument("--ddir", help="specify a directory to save the data in", default='sandbox')
-    parser.add_argument("--beams", type=int, help="specify number of beams", default=BEAMS)
+    parser.add_argument("--ddir", help="specify a directory to save the data in", default='adw_cable_short')
     parser.add_argument("--avg", type=int, help="specify count to average", default=1)
-    parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=1)
+    parser.add_argument("--paths", type=int, help="specify number of paths to calibrate", default=20)
+    
     args = parser.parse_args()
-
     # sanity check arguements 
     if args.avg < 1:
         sys.exit("error: average count is less than 1")
@@ -40,21 +35,18 @@ if __name__ == '__main__':
     if not os.path.exists(args.ddir):
         sys.exit("error: data directory does not exist: %s" % (directory))
 
-    if args.beams < 1:
-        sys.exit("error: beam count is less than 1")
-
     if args.paths < 1:
         sys.exit("error: path count is less than 1")
 
     # open connection with VNA
-    vna = lan_init(args.vnaip, args.vnaport)
+    vna = lan_init(args.vnaip)
     
     # preset VNA if calibrating
     if args.cal:
         vna_preset(vna)
     
     # init VNA measurements
-    vna_init(vna)
+    vna_init(vna, param='S22')
     
     # configure VNA measurements (add smoothing to time delay channel, enable averaging) 
     vna_setspan(vna, SWEEP_SPAN, SWEEP_CENTER, SWEEP_POINTS)
@@ -67,7 +59,7 @@ if __name__ == '__main__':
     if args.cal:
         print 'calibrating VNA'
         vna_through_cal(vna)
-        vna_trigger(vna, TIMEOUT, args.avg)
+        vna_trigger(vna, args.avg)
 
     # setup csv data structure
     csvdat = csv_data()
@@ -86,18 +78,16 @@ if __name__ == '__main__':
         p = int(raw_input('connect and enter a path number and then press enter to continue... '))
         time.sleep(TX_STARTUP_DELAY) # wait for transmitter to warm up
         csvdat.card = p
+        csvdat.beam = 0
 
-        for b in range(args.beams):
-            csvdat.beam = b
-            qnx_setbeam(args.qnxip, b)
-            vna_clearave(vna)
-            vna_trigger(vna, TIMEOUT, args.avg)
+        vna_clearave(vna)
+        vna_trigger(vna, args.avg)
 
-            csvdat.tdelay = vna_readtimedelay(vna)
-            csvdat.ephase = vna_readextendedphase(vna)
-            csvdat.phase = vna_readphase(vna)
-            csvdat.mlog = vna_readmlog(vna)
-            
-            write_csv(args.ddir, csvdat)
+        csvdat.tdelay = vna_readtimedelay(vna)
+        csvdat.ephase = vna_readextendedphase(vna)
+        csvdat.phase = vna_readphase(vna)
+        csvdat.mlog = vna_readmlog(vna)
+                  
+        write_csv(args.ddir, csvdat)
 
     lan_close(vna)

@@ -84,9 +84,12 @@ def write_csv(directory,data):
     return
 
 def read_csv(directory,data):
+    jeffile = 0
     card_dir=os.path.join(directory,"card_%02d" % (data.card)) 
     beam_file=os.path.join(card_dir,"beam_%02d.csv" % (data.beam)) 
-    print beam_file
+    if not os.path.exists(beam_file):
+        beam_file=os.path.join(card_dir,"beam_%04d.csv" % (data.beam)) 
+        jeffile = 1
     if not os.path.exists(beam_file):
         print "file does not exist: %s" % (beam_file)
         return
@@ -113,6 +116,8 @@ def read_csv(directory,data):
     data.phase= [0] * data.sweep_count
     data.ephase= [0] * data.sweep_count
     data.mlog= [0] * data.sweep_count
+    if jeffile:
+        header=reader.next()
     for i in xrange(data.sweep_count):
       row=reader.next()
       data.freqs[i]=float(row[0])

@@ -2,12 +2,12 @@ from csv_utils import *
 import pylab as p
 import sys
 
-directory="./ade_rx"
+directory="./ade2013"
 plotdir="adakplots"
-radar="AZW"
-maxbeams = 24
-cards = range(16)#[6]
-center = [6,7,8,9]
+radar="ade"
+maxbeams = 22
+cards = range(7)#[6]
+center = []#[6,7,8,9]
 plot_directory=os.path.join(directory,plotdir)
 if not os.path.exists(plot_directory): os.mkdir(plot_directory)
 colors={0:"red",1:"blue",2:"black",3:"green",4:"cyan",5:"yellow"}
@@ -50,7 +50,6 @@ for bmnum in range(maxbeams):
     f15_index=int((15E6-freqs[0])/df)+1
     main_tdelay=p.array(data_main.tdelay)
     main_ephase=p.array(data_main.ephase)
-    main_log=p.array(data_main.mlog)
     main_ephase_slope=(main_ephase[700]-main_ephase[500])/(freqs[700]-freqs[500])
     main_ephase_offset=main_ephase[0]-main_ephase_slope*freqs[0]
     print main_ephase_offset,main_ephase_slope,main_ephase[0],freqs[0]
@@ -89,10 +88,6 @@ for bmnum in range(maxbeams):
 
     p.figure(200+bmnum)
     p.plot(freqs*1E-6,main_tdelay*1E9,color=colors[ card % 6 ],label="Card %02d" % (card) )
-
-    p.figure(600+bmnum)
-    p.plot(freqs*1E-6,main_log,color=colors[ card % 6 ],label="Card %02d" % (card) )
-
     if card in [7,8,9,10]:
       p.figure(300+bmnum)
       p.plot(freqs*1E-6,interf_tdelay*1E9,color=colors[card % 6 ],label="Card %02d" % (card+10) )
@@ -235,19 +230,6 @@ for bmnum in range(maxbeams):
   p.title("%s Interf Array Nearest Neighbor Phase Diff Comparison\n Beam %d" % \
       (radar,data_main.beam))
   figfile=os.path.join(plot_directory,"interf_beam_pair_phase_diff_b%02d.png" % (bmnum))
-  p.savefig(figfile)
-
-  p.figure(600+bmnum)
-  p.grid(True)
-  p.legend(loc=4)
-  ax=p.gca()
-  ax.set_xlim((8,20))
-  ax.set_ylim(-80,0)
-  p.xlabel("Freq [MHz]")
-  p.ylabel("log magnitude S12 (dB)")
-  p.title("%s Log Magnitude for \n Beam %d" % \
-      (radar,data_main.beam))
-  figfile=os.path.join(plot_directory,"main_beam_magnitude_%02d.png" % (bmnum))
   p.savefig(figfile)
 
   p.figure(104)

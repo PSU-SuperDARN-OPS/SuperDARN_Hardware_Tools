@@ -2,7 +2,7 @@ from lan_control import *
 from pylab import *
 import time, pdb
 
-VNAHOST = '137.229.27.122'
+VNAHOST = '192.168.11.3'
 
 UNWRAPPED_PHASE = 'UPH'
 PHASE = 'PHAS'
@@ -13,7 +13,7 @@ IMAG = 'IMAG'
 
 def vna_init(vna, param='S12'):
     lan_send(vna, ":INITiate:CONTinuous ON")
-    lan_send(vna, ":TRIG:SOUR BUS")
+    #lan_send(vna, ":TRIG:SOUR BUS")
     lan_send(vna, ":CALC1:PAR:COUN 4")
     lan_send(vna, ":CALC1:PAR1:SEL")
     lan_send(vna, ":CALC1:PAR1:DEFine " + param)
@@ -28,7 +28,6 @@ def vna_init(vna, param='S12'):
     lan_send(vna, ":CALC1:PAR4:DEFine " + param)
     lan_send(vna, ":CALC1:FORM PHAS")
     lan_send(vna, ":SENS1:AVER OFF");
-
 # span and center in hertz
 def vna_setspan(vna, span, center, points):
     lan_send(vna, ":SENSe1:FREQuency:SPAN " + str(span))
@@ -138,8 +137,10 @@ def vna_readspan(vna):
     return linspace(start, stop, points) 
 
 if __name__ == '__main__':
-    vna = lan_init(VNAHOST)
-#   vna_preset(vna)
+    vna = lan_init(VNAHOST, port=5024)
+    vna_preset(vna)
+
+    lan_send(vna, ":INITiate:CONTinuous ON")
     vna_init(vna)
     vna_setspan(vna, 12e6, 18e6, 401)
 #    vna_through_cal(vna)

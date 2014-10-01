@@ -1,9 +1,10 @@
 import telnetlib, time
 VNATIMEOUT = 5 # seconds
-VNAHOST = '192.168.17.100'
+NE5230APORT = 5024
+VNAHOST = '192.168.11.3'
 
-def lan_init(host):
-    tn = telnetlib.Telnet(host)
+def lan_init(host, port = 23):
+    tn = telnetlib.Telnet(host, port)
     time.sleep(.5)
     print "initial response from VNA: " + tn.read_until("MAGIC", timeout=5)
     return tn 
@@ -28,5 +29,5 @@ def lan_close(tn):
     tn.close()
 
 if __name__ == '__main__':
-    tn = lan_init(VNAHOST)
+    tn = lan_init(VNAHOST, NE5230APORT)
     lan_close(tn)

@@ -4,14 +4,16 @@
 import os
 import time
 
-QNX_IP = 'azores-qnx'
+QNX_IP = '192.168.0.210'
 BEAM_SETTLE = .5
 
-def qnx_setbeam(ip, beam):
-    os.system('ssh root@' + ip + ' "/root/current_ros/dio_beam_direction -b ' + str(int(beam)) + ' >/dev/null 2>/dev/null"')
+# radar 1 is east, radar 2 is west
+
+def qnx_setbeam(ip, beam, radar = 2):
+    os.system('ssh root@' + ip + ' "/root/current_ros/dio_beam_direction -b ' + str(int(beam)) + ' -r ' + str(int(radar)) + ' >/dev/null 2>/dev/null"')
     time.sleep(BEAM_SETTLE)
 
 
 def qnx_setmemloc(ip, loc):
-    os.system('ssh radar@' + ip + ' "/home/radar/bin/dio_beam_direction -b ' + str(int(loc)) + ' MemLoc -r 1 >/dev/null 2>/dev/null"')
+    os.system('ssh radar@' + ip + ' "/home/radar/bin/dio_beam_direction -b ' + str(int(loc)) + ' MemLoc -r 0 >/dev/null 2>/dev/null"')
     time.sleep(BEAM_SETTLE)
