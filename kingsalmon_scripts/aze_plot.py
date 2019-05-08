@@ -4,9 +4,9 @@ import sys
 
 directory="./ade_rx"
 plotdir="adakplots"
-radar="AZW"
+radar = "AZW"
 maxbeams = 24
-cards =  range(20)
+cards = range(20)
 middlecards = [6,7,8,9]
 plot_directory=os.path.join(directory,plotdir)
 if not os.path.exists(plot_directory): os.mkdir(plot_directory)
@@ -73,8 +73,8 @@ for bmnum in range(maxbeams):
       diff_ephase_tdelay=interf_ephase_tdelay-main_ephase_tdelay
       smooth_phase_diff_tdelay=p.zeros_like(phase_diff_tdelay)
       sum_count=p.zeros_like(phase_diff_tdelay)
-      for i in xrange(len(phase_diff_tdelay)):
-        for j in xrange(40):
+      for i in range(len(phase_diff_tdelay)):
+        for j in range(40):
           if i+j < len(phase_diff_tdelay):
             smooth_phase_diff_tdelay[i]+=phase_diff_tdelay[i+j]
             sum_count[i]+=1
@@ -100,7 +100,7 @@ for bmnum in range(maxbeams):
         p.figure(500+bmnum)
         p.plot(freqs*1E-6,interf_nearest_pair_phase_diff,color=colors[ card % 6 ],label="Card %02d-%02d" % (card+10,card-1+10) )
     if card in center: 
-      .figure(100)
+      p.figure(100)
       p.clf()
       p.grid(True)
 #    p.plot(freqs[0:-1]*1E-6,diff_ephase_tdelay*1E9,color="black")
