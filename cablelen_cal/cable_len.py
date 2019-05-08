@@ -90,8 +90,8 @@ if __name__ == '__main__':
     if args.avg < 1:
         sys.exit("error: average count is less than 1")
 
-    if not os.path.exists(args.ddir):
-        sys.exit("error: data directory does not exist: %s" % args.ddir)
+    if not os.path.exists(args.data_dir):
+        sys.exit("error: data directory does not exist: %s" % args.data_dir)
 
     if args.cables < 1:
         sys.exit("error: cable count is less than 1")
