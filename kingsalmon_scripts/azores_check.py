@@ -9,6 +9,7 @@ from pylab import *
 from sd_utilities.vna_control import *
 from sd_utilities.qnx_beamcontrol import *
 from sd_utilities.csv_utils import *
+from kingsalmon_scripts.qnx_beamcontrol import *
 
 import argparse, os, time, sys
 
@@ -78,7 +79,7 @@ if __name__ == '__main__':
 
     # calibrate VNA if run with --cal
     if args.cal:
-        print 'calibrating VNA'
+        print('calibrating VNA')
         vna_through_cal(vna)
         vna_trigger(vna, args.avg)
 
@@ -96,12 +97,12 @@ if __name__ == '__main__':
     
     # step through each path and measure phase, time delay, and magnitude at each beam setting
     for p in range(args.paths):
-        p = int(raw_input('connect and enter a path number and then press enter to continue... '))
+        p = int(input('connect and enter a path number and then press enter to continue... '))
         time.sleep(TX_STARTUP_DELAY) # wait for transmitter to warm up
         csvdat.card = p
-        print 'measuring card ' + str(p)
+        print('measuring card ' + str(p))
         for b in range(args.beams):
-            print '\tmeasuring beam ' + str(b)
+            print('\tmeasuring beam ' + str(b))
             csvdat.beam = b
             qnx_setmemloc(args.qnxip, b, args.rack)
             vna_clearave(vna)
@@ -115,7 +116,7 @@ if __name__ == '__main__':
             # overwrite generic calibration with frequency window calibrations where available
             if args.freqcal:
                 for fc in CAL_FREQS:
-                    print '\t\tmeasuring frequency ' + str(fc) + ' hz'
+                    print('\t\tmeasuring frequency ' + str(fc) + ' hz')
 
                     # find frequency range of calibration
                     minidx = argmin(abs(csvdat.freqs - fc))
