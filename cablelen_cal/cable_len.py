@@ -99,20 +99,20 @@ if __name__ == '__main__':
     if args.vel > 1 or args.vel < 0:
         sys.exit("error: cable velocity factor violates known physics")
 
-    if args.tlen == 0:
+    if args.target_len == 0:
         sys.exit("error: target cable length is zero meters")
 
     # setup logging and csv file writing
-    logging.basicConfig(format='%(asctime)s %(message)s', filename=args.ddir + '/cable_len' + str(datetime.date.today()) + '.log', filemode='a')
+    logging.basicConfig(format='%(asctime)s %(message)s', filename=args.data_dir + '/cable_len' + str(datetime.date.today()) + '.log', filemode='a')
 
-    csvfile = open(args.dir + '/cable_lens' + str(datetime.date.today()) + '.csv', 'a')
+    csvfile = open(args.data_dir + '/cable_lens' + str(datetime.date.today()) + '.csv', 'a')
     csvwriter = csv.writer(csvfile, delimiter=',')
     
     csvwriter.writerow(["cable length log", str(datetime.date.today())])
     csvwriter.writerow(["cable #", "cable length (m)"])
 
     # open connection with vna
-    vna = lan_init(args.vnaip)
+    vna = lan_init(args.vna_ip)
 
     # preset vna if calibrating
     if args.cal:
@@ -142,23 +142,23 @@ if __name__ == '__main__':
         p = int(input('connect and enter a cable number and then press enter to continue... '))
 
         clen = get_cablelen(vna, args.vel, freqs)
-        printlog('initial cable %d length is %.4f of %.4f meters' % (p, clen, args.tlen))
+        printlog('initial cable %d length is %.4f of %.4f meters' % (p, clen, args.target_len))
         
         if(args.meas):
             break
 
         while(True):
-            if abs(clen - args.tlen) < args.tol or args.tlen > clen:
-                if args.tlen > clen:
+            if abs(clen - args.target_len) < args.tol or args.target_len > clen:
+                if args.target_len > clen:
                     printlog('cable shorter than target length, breaking')
-                printlog('cable %d final length is %.4f of %.4f meters' % (p, clen, args.tlen))
+                printlog('cable %d final length is %.4f of %.4f meters' % (p, clen, args.target_len))
                 cable_lens[p] = clen
                 csvwriter.writerow([p, clen])
                 break
 
             clen = get_cablelen(vna, args.vel, freqs)
-            error = clen - args.tlen
-            printlog('cable %d is %.4f of %.4f meters' % (p, clen, args.tlen))
+            error = clen - args.target_len
+            printlog('cable %d is %.4f of %.4f meters' % (p, clen, args.target_len))
             feeterror = FEET_PER_METER * (error / 2.0)
             incherror = (feeterror - int(feeterror)) * 12
 
