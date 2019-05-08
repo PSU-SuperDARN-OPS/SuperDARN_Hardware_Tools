@@ -52,7 +52,7 @@ for bmnum in range(maxbeams):
     main_ephase=p.array(data_main.ephase)
     main_ephase_slope=(main_ephase[700]-main_ephase[500])/(freqs[700]-freqs[500])
     main_ephase_offset=main_ephase[0]-main_ephase_slope*freqs[0]
-    print main_ephase_offset,main_ephase_slope,main_ephase[0],freqs[0]
+    print(main_ephase_offset,main_ephase_slope,main_ephase[0],freqs[0])
     main_phase_from_tdelay=-main_tdelay*freqs*360.0
     main_ephase_diff=p.diff(data_main.ephase)
     freq_diff=p.diff(data_main.freqs)

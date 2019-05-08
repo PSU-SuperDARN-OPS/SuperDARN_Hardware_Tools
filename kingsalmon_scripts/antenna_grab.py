@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
     # calibrate VNA if run with --cal
     if args.cal:
-        print 'calibrating VNA'
+        print('calibrating VNA')
         vna_through_cal(vna)
         vna_trigger(vna, args.avg)
 

@@ -26,18 +26,18 @@ def write_csv(directory,data):
     if data.phase is None: data.phase=[]
     if data.ephase is None: data.ephase=[]
     if data.mlog is None: data.mlog=[]
-    print directory,data.card,data.beam
+    print(directory,data.card,data.beam)
     if not os.path.exists(directory):
-        print "directory does not exist: %s" % (directory)
+        print("directory does not exist: %s" % (directory))
         return
     if not os.path.isdir(directory):
-        print "Not a directory: %s" % (directory)
+        print("Not a directory: %s" % (directory))
         return
     card_dir=os.path.join(directory,"card_%02d" % (data.card)) 
     if not os.path.exists(card_dir):
         os.mkdir(card_dir)  
     if not os.path.isdir(card_dir):
-        print "Not a directory: %s" % (card_dir)
+        print("Not a directory: %s" % (card_dir))
         return
     beam_file=os.path.join(card_dir,"beam_%02d.csv" % (data.beam)) 
     csv_file=open(beam_file,"w")
@@ -91,15 +91,15 @@ def read_csv(directory,data):
         beam_file=os.path.join(card_dir,"beam_%04d.csv" % (data.beam)) 
         jeffile = 1
     if not os.path.exists(beam_file):
-        print "file does not exist: %s" % (beam_file)
+        print("file does not exist: %s" % (beam_file))
         return
     csv_file=open(beam_file,"r")
     reader=csv.reader(csv_file,delimiter="\t")
     header=reader.next()
     if (data.card!=int(header[1])) :
-      print "Card number mismatch",data.card,header[1] 
+      print("Card number mismatch",data.card,header[1])
     if (data.beam!=int(header[3])) :
-      print "Beam number mismatch",data.card,header[1] 
+      print("Beam number mismatch",data.card,header[1])
     header=reader.next()
     data.sweep_count=int(header[1])
     data.freq_start=float(header[3])

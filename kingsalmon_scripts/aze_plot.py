@@ -53,7 +53,7 @@ for bmnum in range(maxbeams):
     main_log=p.array(data_main.mlog)
     main_ephase_slope=(main_ephase[700]-main_ephase[500])/(freqs[700]-freqs[500])
     main_ephase_offset=main_ephase[0]-main_ephase_slope*freqs[0]
-    print main_ephase_offset,main_ephase_slope,main_ephase[0],freqs[0]
+    print(main_ephase_offset,main_ephase_slope,main_ephase[0],freqs[0])
     main_phase_from_tdelay=-main_tdelay*freqs*360.0
     main_ephase_diff=p.diff(data_main.ephase)
     freq_diff=p.diff(data_main.freqs)
@@ -100,7 +100,7 @@ for bmnum in range(maxbeams):
         p.figure(500+bmnum)
         p.plot(freqs*1E-6,interf_nearest_pair_phase_diff,color=colors[ card % 6 ],label="Card %02d-%02d" % (card+10,card-1+10) )
     if card in center: 
-        .figure(100)
+      .figure(100)
       p.clf()
       p.grid(True)
 #    p.plot(freqs[0:-1]*1E-6,diff_ephase_tdelay*1E9,color="black")

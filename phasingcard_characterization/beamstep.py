@@ -69,7 +69,7 @@ def measure_phasingcard(int_time = INTEGRATION_TIME, card = -1):
             distorts.append(scope_analyzedistortion(data, OUTPUT_CHANNEL))
             thds.append(scope_analyzethd(data, OUTPUT_CHANNEL))
 
-            print 'card ' + str(card) + ', frequency ' + str(f) + ', beam ' + str(b) + ', vpp: ' + str(vouts[-1])[:5] + ', phase: ' + str(phases[-1])[:5] +  ', vin: ' + str(vins[-1])[:5] + ' distortion: ' + str(distorts[-1])[:5] + ' thd: ' + str(thds[-1])[:5]
+            print('card ' + str(card) + ', frequency ' + str(f) + ', beam ' + str(b) + ', vpp: ' + str(vouts[-1])[:5] + ', phase: ' + str(phases[-1])[:5] +  ', vin: ' + str(vins[-1])[:5] + ' distortion: ' + str(distorts[-1])[:5] + ' thd: ' + str(thds[-1])[:5])
 
             # sanity check measurements and log odd behavior
             if vouts[-1] < BEAMVPP_THRESHOLD:
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         
         os.system('ssh root@azores-qnx.gi.alaska.edu "cp ~/operational_radar_code/azores/site_data/site.ini.cal ~/operational_radar_code/azores/site_data/site.ini; ~/operational_radar_code/azores/stop.ros; nohup ~/operational_radar_code/azores/start.ros &"')
         time.sleep(ROS_STARTUP_DELAY)
-        print 'qnx started, measuring phasing cards..'
+        print('qnx started, measuring phasing cards..')
 
         pickle_dict['card' + str(c) + 'opt'] = measure_phasingcard(card=c)
 
