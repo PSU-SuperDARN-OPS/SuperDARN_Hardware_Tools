@@ -117,7 +117,7 @@ def vna_readtimedelay(vna):
 
 
 def vna_through_cal(vna):
-    raw_input('connect S12 through and press enter to continue')
+    input('connect S12 through and press enter to continue')
     lan_send(vna, ":SENS1:CORR:COLL:METH:THRU 1,2")
     time.sleep(1) 
     lan_send(vna, "SENS1:CORR:COLL:THRU 1,2")
@@ -128,23 +128,23 @@ def vna_through_cal(vna):
     time.sleep(4)
     lan_send(vna, ":SENS1:CORR:COLL:SAVE")
     time.sleep(1)
-    raw_input('calibration complete, connect DUT and press enter to continue')
+    input('calibration complete, connect DUT and press enter to continue')
 
 
 def vna_slot1_cal(vna, port):
     lan_send(vna, ":SENS1:CORR:COLL:METH:SLOT1 " + str(port))
     time.sleep(1)
-    raw_input('connect OPEN to port ' + str(port) + ' then press enter to continue')
+    input('connect OPEN to port ' + str(port) + ' then press enter to continue')
     lan_send(vna, ":SENS1:CORR:COLL:OPEN " + str(port))
     time.sleep(1)
-    raw_input('connect SHORT to port ' + str(port) + ' then press enter to continue')
+    input('connect SHORT to port ' + str(port) + ' then press enter to continue')
     lan_send(vna, ":SENS1:CORR:COLL:SHOR" + str(port))
     time.sleep(1)
-    raw_input('connect LOAD to port ' + str(port) + ' then press enter to continue')
+    input('connect LOAD to port ' + str(port) + ' then press enter to continue')
     lan_send(vna, ":SENS1:CORR:COLL:LOAD " + str(port))
     time.sleep(1)
     lan_send(vna, ":SENS1:CORR:COLL:SAVE")
-    raw_input('calibration complete, connect DUT and press enter to continue')
+    input('calibration complete, connect DUT and press enter to continue')
 
 
 def vna_readspan(vna):
