@@ -70,7 +70,7 @@ def write_csv(directory,data):
         "Mag Log [dB]",
     ]
     csv_writer.writerow(labels)
-    for i in xrange(len(data.freqs)):
+    for i in range(len(data.freqs)):
         row=[
             data.freqs[i],
             data.tdelay[i],
@@ -118,7 +118,7 @@ def read_csv(directory,data):
     data.mlog= [0] * data.sweep_count
     if jeffile:
         header=reader.next()
-    for i in xrange(data.sweep_count):
+    for i in range(data.sweep_count):
       row=reader.next()
       data.freqs[i]=float(row[0])
       data.tdelay[i]=float(row[1])
