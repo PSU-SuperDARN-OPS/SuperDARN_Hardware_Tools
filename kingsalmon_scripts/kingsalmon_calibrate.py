@@ -6,9 +6,9 @@
 # jef spaleta
 
 from pylab import *
-from vna_control import *
-from qnx_beamcontrol import *
-from csv_utils import *
+from sd_utilities.vna_control import *
+from sd_utilities.qnx_beamcontrol import *
+from sd_utilities.csv_utils import *
 
 import argparse, os, time, sys
 
