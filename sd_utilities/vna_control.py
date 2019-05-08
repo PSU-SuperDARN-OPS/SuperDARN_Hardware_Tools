@@ -76,7 +76,7 @@ def vna_preset(vna):
 
 
 def vna_trigger(vna, triggers=1):
-    for i in xrange(triggers):
+    for i in range(triggers):
         lan_send(vna, ":TRIG:SING")
         lan_send(vna, "*OPC?", wait=False)
     
