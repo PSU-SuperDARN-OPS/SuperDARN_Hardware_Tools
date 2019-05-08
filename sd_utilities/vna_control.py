@@ -1,5 +1,6 @@
 from sd_utilities.lan_control import *
-from pylab import *
+import numpy
+import matplotlib.pyplot as pyplot
 import time
 import pdb
 
@@ -151,7 +152,7 @@ def vna_readspan(vna):
     start = float(lan_send(vna, ":SENSe1:FREQuency:STAR?"))
     stop = float(lan_send(vna, ":SENSe1:FREQuency:STOP?"))
     points = float(lan_send(vna, ":SENSe1:SWEep:POINts?"))
-    return linspace(start, stop, points) 
+    return numpy.linspace(start, stop, points)
 
 
 if __name__ == '__main__':
@@ -164,4 +165,4 @@ if __name__ == '__main__':
 #    vna_through_cal(vna)
     vna_readspan(network_analyzer)
     lan_close(network_analyzer)
-    show()
+    pyplot.show()
