@@ -139,7 +139,7 @@ if __name__ == '__main__':
     cable_lens = {}
 
     for p in range(args.cables):
-        p = int(raw_input('connect and enter a cable number and then press enter to continue... '))
+        p = int(input('connect and enter a cable number and then press enter to continue... '))
 
         clen = get_cablelen(vna, args.vel, freqs)
         printlog('initial cable %d length is %.4f of %.4f meters' % (p, clen, args.tlen))
@@ -163,7 +163,7 @@ if __name__ == '__main__':
             incherror = (feeterror - int(feeterror)) * 12
 
             printlog('cable %d error is %.4f, cut %.4f meters (%.4f feet and %.4f inches)' % (p, error, error / 2.0, floor(feeterror), incherror))
-            raw_input('press enter to continue\n')
+            input('press enter to continue\n')
 
     lan_close(vna)
 
