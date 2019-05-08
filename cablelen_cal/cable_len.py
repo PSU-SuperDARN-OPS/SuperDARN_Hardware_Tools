@@ -2,7 +2,7 @@
 # jtklein@alaska.edu, jon klein, 10/2013
 
 from __future__ import division
-from vna_control import *
+from sd_utilities.vna_control import *
 from numpy import mean, deg2rad, pi, floor
 import argparse, logging, os, sys, csv, datetime, pdb
 
@@ -23,7 +23,7 @@ FEET_PER_METER = 3.28084
 INCHES_PER_METER = FEET_PER_METER * 12
 
 def printlog(s):
-    print s
+    print(s)
     logging.info(s)
 
 
@@ -36,8 +36,8 @@ def get_cablelen(vna, vel, freqs):
     clen_delay = calc_cablelen_delay(vna, vel)
     clen_ephase = calc_cablelen_ephase(vna, vel, freqs)
 
-    print 'delay: ' + str(clen_delay)
-    print 'ephase: ' + str(clen_ephase)
+    print('delay: ' + str(clen_delay))
+    print('ephase: ' + str(clen_ephase))
 
     return clen_delay
 

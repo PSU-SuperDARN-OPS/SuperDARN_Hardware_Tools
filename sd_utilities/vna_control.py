@@ -1,4 +1,4 @@
-from lan_control import *
+from sd_utilities.lan_control import *
 from pylab import *
 import time, pdb
 
@@ -79,9 +79,9 @@ def vna_readdat(vna,param,form):
     try:	
         sweep = [float(s) for s in sweep]
     except:
-        print 'This is bad, the data sweep of ' + str(form) + ' read back from the VNA was probably empty.'  
-        print "This usually doesn't happen, rerunning the program might avoid it"
-        print 'We are dumping back to a debugging shell, maybe you can figure out what happened.'
+        print('This is bad, the data sweep of ' + str(form) + ' read back from the VNA was probably empty.')
+        print("This usually doesn't happen, rerunning the program might avoid it")
+        print('We are dumping back to a debugging shell, maybe you can figure out what happened.')
     return sweep 
 
 def vna_readextendedphase(vna):
